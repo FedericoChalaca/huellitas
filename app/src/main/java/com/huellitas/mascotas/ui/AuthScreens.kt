@@ -30,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -70,7 +71,12 @@ private fun PasswordField(value: String, onChange: (String) -> Unit, label: Stri
         modifier = Modifier.fillMaxWidth(),
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = imeAction),
-        trailingIcon = { TextButton(onClick = { visible = !visible }) { Text(if (visible) "Ocultar" else "Ver") } },
+        // canFocus = false: con «Siguiente» del teclado el foco pasa al campo de abajo, no a este botón.
+        trailingIcon = {
+            TextButton(onClick = { visible = !visible }, modifier = Modifier.focusProperties { canFocus = false }) {
+                Text(if (visible) "Ocultar" else "Ver")
+            }
+        },
     )
 }
 
@@ -85,13 +91,13 @@ fun LoginScreen(vm: MainViewModel, onRegister: () -> Unit) {
     AuthLayout("Bienvenido de nuevo", "Entra para ver a tus mascotas y sus vacunas") {
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it; error = null },
             label = { Text("Correo") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
-        PasswordField(password, { password = it }, "Contraseña", ImeAction.Done)
+        PasswordField(password, { password = it; error = null }, "Contraseña", ImeAction.Done)
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
         Button(
             onClick = {
@@ -122,7 +128,7 @@ fun RegisterScreen(vm: MainViewModel, onBack: () -> Unit) {
     AuthLayout("Crea tu cuenta", "Se guarda solo en este celular") {
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = { name = it; error = null },
             label = { Text("Tu nombre") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -130,14 +136,14 @@ fun RegisterScreen(vm: MainViewModel, onBack: () -> Unit) {
         )
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it; error = null },
             label = { Text("Correo") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
-        PasswordField(password, { password = it }, "Contraseña (mínimo 8)", ImeAction.Next)
-        PasswordField(repeat, { repeat = it }, "Repite la contraseña", ImeAction.Done)
+        PasswordField(password, { password = it; error = null }, "Contraseña (mínimo 8)", ImeAction.Next)
+        PasswordField(repeat, { repeat = it; error = null }, "Repite la contraseña", ImeAction.Done)
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
         Button(
             onClick = {

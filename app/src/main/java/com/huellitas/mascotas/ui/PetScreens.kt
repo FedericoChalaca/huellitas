@@ -336,12 +336,12 @@ fun VaccineFormScreen(nav: NavController, vm: MainViewModel, petId: Long, vaccin
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 COMMON_VACCINES.forEach { s -> SuggestionChip(onClick = { name = s }, label = { Text(s) }) }
             }
-            DateField("Fecha de aplicación", applied, { applied = it ?: applied })
-            DateField("Próxima dosis (opcional)", next, { next = it }, clearable = true)
+            DateField("Fecha de aplicación", applied, { applied = it ?: applied; error = null })
+            DateField("Próxima dosis (opcional)", next, { next = it; error = null }, clearable = true)
             Text("Calcular la próxima dosis desde la aplicación:", style = MaterialTheme.typography.labelLarge)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf("En 1 mes" to 1L, "En 6 meses" to 6L, "En 1 año" to 12L).forEach { (label, months) ->
-                    AssistChip(onClick = { applied?.let { next = Dates.addMonths(it, months) } }, label = { Text(label) })
+                    AssistChip(onClick = { applied?.let { next = Dates.addMonths(it, months); error = null } }, label = { Text(label) })
                 }
             }
             OutlinedTextField(notes, { notes = it }, label = { Text("Notas (lote, veterinario…)") }, minLines = 2, modifier = Modifier.fillMaxWidth())
