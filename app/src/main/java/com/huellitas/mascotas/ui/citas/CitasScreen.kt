@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import com.huellitas.mascotas.ui.EmptyState
 import com.huellitas.mascotas.ui.TabScaffold
 
-/** Pestaña Citas. Tarea F-05 (Federico): la lista de próximas citas y el historial. */
+/** Pestaña Citas. Tarea F-10 (Federico): la lista de próximas citas y el historial. */
 @Composable
 fun CitasScreen(nav: NavController) {
     TabScaffold(
@@ -25,6 +25,6 @@ fun CitasScreen(nav: NavController) {
             }
         },
     ) { padding ->
-        EmptyState("🚧", "Mis citas", "Tarea F-05 (Federico): la lista de citas.", Modifier.padding(padding))
+        EmptyState("🚧", "Mis citas", "Tarea F-10 (Federico): la lista de citas.", Modifier.padding(padding))
     }
 }

@@ -161,7 +161,7 @@ fun PetDetailScreen(nav: NavController, vm: MainViewModel, petId: Long) {
                         onDelete = { vaccineToDelete = v },
                     )
                 }
-                // Desparasitaciones: la dibuja Nicolás (N-06) en su propio archivo.
+                // Desparasitaciones: la dibuja Nicolás (N-04) en su propio archivo.
                 item { DesparasitacionesSection(nav, petId) }
             }
         }

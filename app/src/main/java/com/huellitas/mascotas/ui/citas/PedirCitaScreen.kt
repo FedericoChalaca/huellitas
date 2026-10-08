@@ -6,7 +6,7 @@ import com.huellitas.mascotas.data.motivoDeRuta
 import com.huellitas.mascotas.ui.PantallaPendiente
 
 /**
- * Pedir una cita. Tarea F-04 (Federico).
+ * Pedir una cita. Tareas F-04 y F-05 (Federico).
  * [petId] es 0 si no viene una mascota elegida; [motivo] es la palabra de la ruta ("vacunacion"…) o "-".
  */
 @Composable

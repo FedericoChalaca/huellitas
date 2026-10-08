@@ -9,7 +9,7 @@ import android.app.Application
  */
 class MedicamentosViewModel(app: Application) : OwnerViewModel(app) {
     // TODO(N-13): carrito: val carrito: StateFlow<List<LineaCotizacion>>, agregar(m), quitar(m), cambiarCantidad(m, n), vaciar()
-    // TODO(N-18): suspend fun guardarCotizacion(petId: Long?): Boolean
+    // TODO(N-18): suspend fun guardarCotizacion(petId: Long?, totales: Totales): Boolean
     // TODO(N-19): val cotizaciones: StateFlow<List<Quote>>
     // TODO(N-20): fun renglones(quoteId: Long): Flow<List<QuoteItem>>
 }
