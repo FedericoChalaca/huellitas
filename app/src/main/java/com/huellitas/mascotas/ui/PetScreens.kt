@@ -54,6 +54,7 @@ import com.huellitas.mascotas.data.SPECIES
 import com.huellitas.mascotas.data.Vaccine
 import com.huellitas.mascotas.data.speciesEmoji
 import com.huellitas.mascotas.data.vaccineStatus
+import com.huellitas.mascotas.ui.desparasitacion.DesparasitacionesSection
 import kotlinx.coroutines.launch
 
 // ---------------------------------------------------------------- Listado
@@ -136,6 +137,11 @@ fun PetDetailScreen(nav: NavController, vm: MainViewModel, petId: Long) {
             ) {
                 item { PetHeader(current, today) }
                 item {
+                    FilledTonalButton(onClick = { nav.navigate("cita/pedir/$petId/-") }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Pedir cita para ${current.name}")
+                    }
+                }
+                item {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Vacunas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         FilledTonalButton(onClick = { nav.navigate("vaccine/form/$petId/0") }) {
@@ -155,6 +161,8 @@ fun PetDetailScreen(nav: NavController, vm: MainViewModel, petId: Long) {
                         onDelete = { vaccineToDelete = v },
                     )
                 }
+                // Desparasitaciones: la dibuja Nicolás (N-06) en su propio archivo.
+                item { DesparasitacionesSection(nav, petId) }
             }
         }
     }

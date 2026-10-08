@@ -22,8 +22,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -62,9 +63,10 @@ data class Tab(val route: String, val label: String, val icon: ImageVector)
 
 val Tabs = listOf(
     Tab("pets", "Mascotas", Icons.Filled.Favorite),
-    Tab("upcoming", "Vacunas", Icons.Filled.DateRange),
-    Tab("settings", "Ajustes", Icons.Filled.Settings),
-    Tab("credits", "Créditos", Icons.Filled.Info),
+    Tab("pendientes", "Pendientes", Icons.Filled.Notifications),
+    Tab("citas", "Citas", Icons.Filled.DateRange),
+    Tab("seguro", "Seguro", Icons.Filled.CheckCircle),
+    Tab("mas", "Más", Icons.Filled.Menu),
 )
 
 /** Pantalla de las cuatro secciones del menú de abajo. */
