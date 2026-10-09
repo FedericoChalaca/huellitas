@@ -78,6 +78,38 @@ object Dates {
     }
 }
 
+/** Pesos colombianos con punto de miles: 48000 se escribe "$ 48.000". */
+fun pesos(valor: Long): String {
+    val miles = kotlin.math.abs(valor).toString().reversed().chunked(3).joinToString(".").reversed()
+    return (if (valor < 0) "- $ " else "$ ") + miles
+}
+
+/** Una vacuna o una desparasitación que tiene fecha de próxima dosis (pestaña Pendientes). */
+data class Pendiente(
+    /** "Vacunación" o "Desparasitación": el mismo texto que el motivo de la cita que la resuelve. */
+    val tipo: String,
+    val id: Long,
+    val petId: Long,
+    val petName: String,
+    val petSpecies: String,
+    val nombre: String,
+    val dueDay: Long,
+) {
+    /** Las vacunas y las desparasitaciones tienen ids aparte: juntas necesitan una clave propia. */
+    val clave: String get() = "$tipo-$id"
+}
+
+/** Junta vacunas y desparasitaciones en una sola lista, de la fecha más cercana a la más lejana. */
+fun unirPendientes(vacunas: List<VaccineWithPet>, desparasitaciones: List<DewormingWithPet>): List<Pendiente> {
+    val v = vacunas.mapNotNull { r ->
+        r.vaccine.nextDueDay?.let { Pendiente("Vacunación", r.vaccine.id, r.vaccine.petId, r.petName, r.petSpecies, r.vaccine.name, it) }
+    }
+    val d = desparasitaciones.mapNotNull { r ->
+        r.deworming.nextDueDay?.let { Pendiente("Desparasitación", r.deworming.id, r.deworming.petId, r.petName, r.petSpecies, r.deworming.product, it) }
+    }
+    return (v + d).sortedWith(compareBy({ it.dueDay }, { it.petName }, { it.nombre }))
+}
+
 val SPECIES = listOf("Perro", "Gato", "Ave", "Conejo", "Pez", "Reptil", "Otro")
 
 fun speciesEmoji(species: String): String = when (species) {

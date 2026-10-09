@@ -1,7 +1,8 @@
 package com.huellitas.mascotas.data
 
 // Catálogo de medicamentos que se pueden cotizar con la aseguradora de la demo (precios inventados).
-// Este archivo es de Nicolás: tarjetas N-08 (catálogo), N-09 (función pesos) y N-16 (cálculo de totales).
+// Este archivo es de Nicolás: tarjetas N-08 (catálogo) y N-16 (cálculo de totales).
+// Para escribir precios usa pesos(...), que ya existe en Logic.kt: pesos(48_000) da "$ 48.000".
 
 data class Medicamento(
     val id: String,
