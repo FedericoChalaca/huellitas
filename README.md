@@ -17,6 +17,6 @@ Necesitas Android Studio y el SDK de Android (compileSdk 37). El proyecto usa Ja
 
 ## Para el equipo
 
-Todo el plan, el reparto del trabajo y las reglas de Git están en [`docs/plan-de-trabajo.md`](docs/plan-de-trabajo.md). Las tareas, en el Trello del equipo.
+Todo el plan, el reparto del trabajo y las reglas de Git están en [`docs/plan-de-trabajo.md`](docs/plan-de-trabajo.md). Las tareas, en el Trello del equipo. La guía de Nicolás, con los pasos de cada tarjeta y los errores comunes, está en [`docs/guia-nicolas.md`](docs/guia-nicolas.md).
 
 Los dibujos de las pantallas están en [`docs/wireframes/`](docs/wireframes/) y en Figma: [Huellitas - Wireframes](https://www.figma.com/design/AuM0H9mTpmj8dgmwznI7ku/Huellitas---Wireframes) (24 pantallas en escala de grises).

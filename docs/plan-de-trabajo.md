@@ -72,7 +72,7 @@ El mejor ejemplo para copiar es el de las vacunas: `MainViewModel.kt` (funciones
 
 ## 4. Las 24 pantallas y de quién es cada una
 
-Los dibujos están en `docs/wireframes/hoja-1.png` a `hoja-6.png` (cuatro por hoja).
+Los dibujos están en `docs/wireframes/hoja-1.png` a `hoja-6.png` (cuatro por hoja) y en [Figma](https://www.figma.com/design/AuM0H9mTpmj8dgmwznI7ku/Huellitas---Wireframes).
 
 | # | Pantalla | Archivo | Estado / dueño |
 |---|---|---|---|
@@ -82,13 +82,13 @@ Los dibujos están en `docs/wireframes/hoja-1.png` a `hoja-6.png` (cuatro por ho
 | 5 | Detalle de la mascota | `ui/PetScreens.kt` | Hecha (Nicolás agrega las desparasitaciones) |
 | 6-7 | Nueva mascota, Registrar vacuna | `ui/PetScreens.kt` | Hechas |
 | 8 | Registrar desparasitación | `ui/desparasitacion/` | **Nicolás** |
-| 9 | Pendientes | `ui/pendientes/` | **Federico** (filtros: Nicolás) |
-| 10-11 | Mis citas, Pedir cita | `ui/citas/` | **Federico** |
+| 9 | Pendientes | `ui/pendientes/` | Hecha |
+| 10-11 | Mis citas, Pedir cita | `ui/citas/` | Hechas |
 | 12 | Detalle de la cita | `ui/citas/` | **Nicolás** |
-| 13 | Seguro (inicio) | `ui/seguro/` | **Federico** |
+| 13 | Seguro (inicio) | `ui/seguro/` | Hecha |
 | 14-15 | Póliza, Planes | `ui/seguro/` | **Nicolás** |
-| 16 | Afiliar mascota | `ui/seguro/` | **Federico** |
-| 17 | Urgencias 24 h | `ui/urgencias/` | **Federico** (botones de la clínica: Nicolás) |
+| 16 | Afiliar mascota | `ui/seguro/` | Hecha |
+| 17 | Urgencias 24 h | `ui/urgencias/` | Hecha (botones de la clínica: Nicolás) |
 | 18 | Primeros auxilios | `ui/urgencias/` | **Nicolás** |
 | 19-21 | Cotizar medicamentos, Mi cotización, Mis cotizaciones | `ui/medicamentos/` | **Nicolás** |
 | 22 | Más | `ui/mas/` | **Nicolás** |
@@ -98,7 +98,7 @@ Los dibujos están en `docs/wireframes/hoja-1.png` a `hoja-6.png` (cuatro por ho
 
 Los códigos son los de las tarjetas de Trello. **F** = Federico, **N** = Nicolás.
 
-**Nicolás (37 tarjetas, todas pequeñas, de 20 a 60 minutos):**
+**Nicolás (38 tarjetas, todas pequeñas, de 20 a 60 minutos).** Su guía paso a paso, con los errores más comunes, está en [`guia-nicolas.md`](guia-nicolas.md).
 
 | Área | Tarjetas |
 |---|---|
@@ -110,8 +110,9 @@ Los códigos son los de las tarjetas de Trello. **F** = Federico, **N** = Nicol�
 | Urgencias (llamar, cómo llegar, primeros auxilios) | N-27 a N-29 |
 | Más, Ajustes y Créditos | N-30 a N-32 |
 | Calidad y publicación | N-33 README, N-34 capturas en la tablet, N-35 política de privacidad, N-36 revisar textos |
+| Diseño en papel | N-37 dibujar a mano los wireframes del Figma |
 
-**Federico (15 tarjetas, las más largas):**
+**Federico (15 tarjetas, las más largas).** De F-01 a F-10 ya están hechas y unidas en `main`; falta la publicación.
 
 | Área | Tarjetas |
 |---|---|
@@ -120,7 +121,7 @@ Los códigos son los de las tarjetas de Trello. **F** = Federico, **N** = Nicol�
 | Datos de la aseguradora y horarios | F-06 |
 | Seguro | F-07, F-08 |
 | Urgencias | F-09 |
-| Publicación | F-11 llave y `.aab`, F-12 ficha de Play, F-13 presentación, F-14 wireframe y Figma, F-15 pruebas en la tablet |
+| Publicación | F-11 llave y `.aab`, F-12 ficha de Play, F-13 presentación, F-14 Figma (hecho), F-15 pruebas en la tablet |
 
 ## 6. Cómo trabajamos con Git
 
