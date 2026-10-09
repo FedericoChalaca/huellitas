@@ -20,7 +20,7 @@ import com.huellitas.mascotas.data.Clinica
 import com.huellitas.mascotas.ui.SpeciesBadge
 
 /**
- * Tarjeta de una clínica (se usa en Urgencias y al elegir clínica para una cita).
+ * Tarjeta de una clínica (se usa en Urgencias).
  * Tareas de Nicolás: N-27 (botón Llamar) y N-28 (botón Cómo llegar).
  */
 @Composable
@@ -39,7 +39,7 @@ fun ClinicaCard(clinica: Clinica, modifier: Modifier = Modifier) {
                 }
             }
             Text(
-                (if (clinica.abierta24h) "Abierta 24 horas · " else "") + "a ${clinica.distanciaKm} km",
+                (if (clinica.abierta24h) "Abierta 24 horas · " else "") + clinica.distancia,
                 style = MaterialTheme.typography.bodyMedium,
             )
             // TODO(N-27): botón "Llamar" (Intent ACTION_DIAL con clinica.telefono)
