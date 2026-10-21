@@ -18,3 +18,6 @@ keystore.properties
 *.key
 *firebase-adminsdk*.json
 google-services.json
+
+# Paquete firmado para subir a Play (se regenera con bundleRelease)
+release/
