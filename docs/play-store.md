@@ -1,4 +1,4 @@
-# Ficha de Google Play (borrador listo para pegar)
+﻿# Ficha de Google Play (borrador listo para pegar)
 
 Estado (21 de octubre de 2026): **todo listo para subir.** La app ya no tiene pantallas en construcción; el `.aab` firmado está en `release/huellitas-1.0.0.aab`. Los pasos exactos están en [`publicar-en-play.md`](publicar-en-play.md).
 
@@ -7,7 +7,7 @@ Estado (21 de octubre de 2026): **todo listo para subir.** La app ya no tiene pa
 - **Nombre (máx. 30):** `Huellitas: salud de mascotas`
 - **Paquete:** `com.huellitas.mascotas`
 - **Idioma predeterminado:** Español (Latinoamérica)
-- **Tipo / categoría:** Aplicación · Salud y bienestar (otra opción: Estilo de vida)
+- **Tipo / categoría:** Aplicación · Estilo de vida (con "Salud y fitness" Play exige declarar funciones de salud)
 - **Contacto:** federicoml2004@gmail.com
 - **Precio:** gratis · **Anuncios:** no
 
@@ -74,3 +74,4 @@ Una app que muestra un «seguro» puede ser revisada con la política de servici
 - **Respaldar la llave y esa contraseña en dos lugares** (por ejemplo el gestor de contraseñas y una memoria USB). Si se pierden no se puede actualizar la app.
 - Huella SHA-256 del certificado: `44:77:F4:9B:D2:E5:8B:DA:B8:B3:E8:CC:8C:E3:20:38:5A:32:82:CC:87:3B:CF:6A:67:2A:11:EE:EB:AD:5B:95`
 - Generar el paquete: `.\gradlew.bat bundleRelease` → `app\build\outputs\bundle\release\app-release.aab`. Antes de la subida final, subir `versionCode` en `app/build.gradle.kts` si ya se subió una versión.
+
