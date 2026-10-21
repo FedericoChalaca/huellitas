@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Sin permisos: todo se guarda en el celular. allowBackup apagado para que la copia de
-         seguridad de Android no se lleve la base de datos con las cuentas. -->
+    <!-- Sin permisos: todo se guarda en el celular. -->
     <application
         android:name=".HuellitasApplication"
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
