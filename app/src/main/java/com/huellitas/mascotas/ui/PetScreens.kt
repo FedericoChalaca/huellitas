@@ -245,6 +245,7 @@ fun PetFormScreen(nav: NavController, vm: MainViewModel, petId: Long) {
     var notes by remember { mutableStateOf("") }
     var loaded by remember { mutableStateOf(petId == 0L) }
     var saving by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(petId) {
@@ -280,20 +281,22 @@ fun PetFormScreen(nav: NavController, vm: MainViewModel, petId: Long) {
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
+            error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             Button(
                 onClick = {
+                    if (saving) return@Button
                     saving = true
                     scope.launch {
                         val saved = vm.savePet(
                             Pet(id = petId, ownerId = 0, name = name.trim(), species = species, breed = breed.trim(), birthDay = birth, notes = notes.trim()),
                         )
                         saving = false
-                        if (saved != null) nav.popBackStack()
+                        if (saved != null) nav.popBackStack() else error = "No se pudo guardar. Vuelve a intentarlo."
                     }
                 },
                 enabled = loaded && !saving && name.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("Guardar") }
+            ) { Text(if (saving) "Guardando…" else "Guardar") }
         }
     }
 }
