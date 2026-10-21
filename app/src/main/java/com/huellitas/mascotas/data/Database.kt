@@ -9,6 +9,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.Upsert
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -180,6 +182,31 @@ abstract class QuoteDao {
     }
 }
 
+internal val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `dewormings` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `petId` INTEGER NOT NULL, `product` TEXT NOT NULL, `kind` TEXT NOT NULL, `appliedDay` INTEGER NOT NULL, `nextDueDay` INTEGER, `notes` TEXT NOT NULL, FOREIGN KEY(`petId`) REFERENCES `pets`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_dewormings_petId` ON `dewormings` (`petId`)")
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `appointments` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `petId` INTEGER NOT NULL, `reason` TEXT NOT NULL, `specialty` TEXT NOT NULL, `clinicId` TEXT NOT NULL, `day` INTEGER NOT NULL, `slot` TEXT NOT NULL, `status` TEXT NOT NULL, `urgent` INTEGER NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`petId`) REFERENCES `pets`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_appointments_petId` ON `appointments` (`petId`)")
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `policies` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `petId` INTEGER NOT NULL, `planId` TEXT NOT NULL, `number` TEXT NOT NULL, `startDay` INTEGER NOT NULL, `endDay` INTEGER NOT NULL, `usedCop` INTEGER NOT NULL, FOREIGN KEY(`petId`) REFERENCES `pets`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_policies_petId` ON `policies` (`petId`)")
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `quotes` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ownerId` INTEGER NOT NULL, `petId` INTEGER, `createdDay` INTEGER NOT NULL, `totalCop` INTEGER NOT NULL, `coveredCop` INTEGER NOT NULL, `status` TEXT NOT NULL, FOREIGN KEY(`ownerId`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_quotes_ownerId` ON `quotes` (`ownerId`)")
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `quote_items` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quoteId` INTEGER NOT NULL, `medicineId` TEXT NOT NULL, `name` TEXT NOT NULL, `unitPriceCop` INTEGER NOT NULL, `quantity` INTEGER NOT NULL, FOREIGN KEY(`quoteId`) REFERENCES `quotes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_quote_items_quoteId` ON `quote_items` (`quoteId`)")
+    }
+}
+
 @Database(
     entities = [User::class, Pet::class, Vaccine::class, Deworming::class, Appointment::class, Policy::class, Quote::class, QuoteItem::class],
     version = 2,
@@ -195,11 +222,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun quotes(): QuoteDao
 
     companion object {
-        // Todavía no hay usuarios reales con la versión 1: si cambia el esquema se recrea la base.
-        // ponytail: antes de publicar actualizaciones con datos de usuarios hay que escribir migraciones.
         fun create(context: Context): AppDatabase =
             Room.databaseBuilder(context, AppDatabase::class.java, "huellitas.db")
-                .fallbackToDestructiveMigration(dropAllTables = true)
+                .addMigrations(MIGRATION_1_2)
                 .build()
     }
 }
