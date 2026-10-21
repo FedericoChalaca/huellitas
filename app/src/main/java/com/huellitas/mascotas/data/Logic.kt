@@ -2,8 +2,11 @@ package com.huellitas.mascotas.data
 
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.Period
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.Locale
@@ -60,8 +63,11 @@ fun vaccineStatus(nextDueDay: Long?, today: Long, warnDays: Int): VaccineStatus 
 
 object Dates {
     private val formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", Locale.forLanguageTag("es-CO"))
+    private val bogotaZone = ZoneId.of("America/Bogota")
 
-    fun today(): Long = LocalDate.now().toEpochDay()
+    fun today(at: Instant = Instant.now()): Long = at.atZone(bogotaZone).toLocalDate().toEpochDay()
+
+    fun currentTime(at: Instant = Instant.now()): LocalTime = at.atZone(bogotaZone).toLocalTime()
 
     fun format(day: Long): String = LocalDate.ofEpochDay(day).format(formatter)
 

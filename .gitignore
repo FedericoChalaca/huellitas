@@ -13,3 +13,8 @@ captures/
 keystore.properties
 *.jks
 *.keystore
+
+# Credenciales de servicios: nunca al repositorio
+*.key
+*firebase-adminsdk*.json
+google-services.json
