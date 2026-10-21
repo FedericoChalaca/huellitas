@@ -308,6 +308,7 @@ fun VaccineFormScreen(nav: NavController, vm: MainViewModel, petId: Long, vaccin
     var notes by remember { mutableStateOf("") }
     var loaded by remember { mutableStateOf(vaccineId == 0L) }
     var error by remember { mutableStateOf<String?>(null) }
+    var saving by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(vaccineId) {
@@ -323,15 +324,27 @@ fun VaccineFormScreen(nav: NavController, vm: MainViewModel, petId: Long, vaccin
     }
 
     fun submit() {
+        if (saving) return
         val appliedDay = applied ?: return
         val nextDay = next
         if (nextDay != null && nextDay < appliedDay) {
             error = "La próxima dosis debe ser después de la aplicada."
             return
         }
+        saving = true
         scope.launch {
-            vm.saveVaccine(Vaccine(id = vaccineId, petId = petId, name = name.trim(), appliedDay = appliedDay, nextDueDay = nextDay, notes = notes.trim()))
-            nav.popBackStack()
+            val saved = vm.saveVaccine(
+                Vaccine(
+                    id = vaccineId,
+                    petId = petId,
+                    name = name.trim(),
+                    appliedDay = appliedDay,
+                    nextDueDay = nextDay,
+                    notes = notes.trim(),
+                ),
+            )
+            saving = false
+            if (saved) nav.popBackStack() else error = "No se pudo guardar. Vuelve a intentarlo."
         }
     }
 
@@ -356,9 +369,9 @@ fun VaccineFormScreen(nav: NavController, vm: MainViewModel, petId: Long, vaccin
             error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             Button(
                 onClick = { submit() },
-                enabled = loaded && name.isNotBlank(),
+                enabled = loaded && !saving && name.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("Guardar") }
+            ) { Text(if (saving) "Guardando…" else "Guardar") }
         }
     }
 }
