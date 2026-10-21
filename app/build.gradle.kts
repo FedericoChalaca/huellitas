@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+}
+
+// La llave de subida y su contraseña viven fuera del repositorio (keystore.properties, ignorado por git).
+// Sin ese archivo la app compila igual, solo que el release sale sin firmar: así cualquiera del equipo
+// puede compilar y probar sin tener la llave.
+val firma = Properties().apply {
+    val archivo = rootProject.file("keystore.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
 }
 
 android {
@@ -18,8 +28,20 @@ android {
         versionName = "1.0.0"
     }
 
+    signingConfigs {
+        if (firma.isNotEmpty()) {
+            create("lanzamiento") {
+                storeFile = file(firma.getProperty("storeFile"))
+                storePassword = firma.getProperty("storePassword")
+                keyAlias = firma.getProperty("keyAlias")
+                keyPassword = firma.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (firma.isNotEmpty()) signingConfig = signingConfigs.getByName("lanzamiento")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
