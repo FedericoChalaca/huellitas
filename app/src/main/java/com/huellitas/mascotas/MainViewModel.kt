@@ -3,6 +3,7 @@ package com.huellitas.mascotas
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.withTransaction
 import com.huellitas.mascotas.data.Pet
 import com.huellitas.mascotas.data.Passwords
 import com.huellitas.mascotas.data.Settings
@@ -126,10 +127,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (db.pets().get(vaccine.petId, owner) == null) return false
         if (vaccine.id != 0L) {
             if (db.vaccines().get(vaccine.id, owner) == null) return false
-        } else {
-            db.vaccines().clearNextDue(vaccine.petId, vaccine.name)
         }
-        db.vaccines().upsert(vaccine)
+        db.withTransaction {
+            if (vaccine.id == 0L) db.vaccines().clearNextDue(vaccine.petId, vaccine.name)
+            db.vaccines().upsert(vaccine)
+        }
         return true
     }
 
