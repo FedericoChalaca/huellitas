@@ -10,7 +10,6 @@ import com.huellitas.mascotas.data.MEDICINA_GENERAL
 import com.huellitas.mascotas.data.clinicaDeUrgencias
 import com.huellitas.mascotas.data.errorDeCita
 import com.huellitas.mascotas.data.hora
-import java.time.LocalTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,7 +39,7 @@ class CitasViewModel(app: Application) : OwnerViewModel(app) {
     suspend fun pedirCita(petId: Long, motivo: String, especialidad: String, clinicaId: String, day: Long, slot: String, notas: String): Long? {
         val owner = uid() ?: return null
         if (db.pets().get(petId, owner) == null) return null
-        if (errorDeCita(motivo, especialidad, clinicaId, day, slot, Dates.today(), LocalTime.now()) != null) return null
+        if (errorDeCita(motivo, especialidad, clinicaId, day, slot, Dates.today(), Dates.currentTime()) != null) return null
         return db.appointments().upsert(
             Appointment(
                 petId = petId, reason = motivo, specialty = especialidad, clinicId = clinicaId,
@@ -53,7 +52,7 @@ class CitasViewModel(app: Application) : OwnerViewModel(app) {
     suspend fun pedirUrgencia(petId: Long): Long? {
         val owner = uid() ?: return null
         if (db.pets().get(petId, owner) == null) return null
-        val ahora = LocalTime.now()
+        val ahora = Dates.currentTime()
         return db.appointments().upsert(
             Appointment(
                 petId = petId, reason = "Urgencia", specialty = MEDICINA_GENERAL, clinicId = clinicaDeUrgencias().id,

@@ -114,7 +114,7 @@ fun errorDeCita(
     day: Long,
     slot: String,
     today: Long,
-    now: LocalTime = LocalTime.now(),
+    now: LocalTime = Dates.currentTime(),
 ): String? {
     val clinica = clinicaPorId(clinicaId)
     return when {

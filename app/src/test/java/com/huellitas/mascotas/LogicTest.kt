@@ -11,7 +11,9 @@ import com.huellitas.mascotas.data.VaccineWithPet
 import com.huellitas.mascotas.data.pesos
 import com.huellitas.mascotas.data.unirPendientes
 import com.huellitas.mascotas.data.vaccineStatus
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -96,5 +98,16 @@ class LogicTest {
     fun fechasEnEspanol() {
         assertEquals("7 de octubre de 2026", Dates.format(LocalDate.of(2026, 10, 7).toEpochDay()))
         assertEquals(LocalDate.of(2027, 4, 7).toEpochDay(), Dates.addMonths(LocalDate.of(2026, 10, 7).toEpochDay(), 6))
+    }
+
+    @Test
+    fun fechasYHorasDeCitasUsanBogotaAlCruzarMedianoche() {
+        val antesDeMedianocheEnBogota = Instant.parse("2026-10-12T04:59:00Z")
+        assertEquals(LocalDate.of(2026, 10, 11).toEpochDay(), Dates.today(antesDeMedianocheEnBogota))
+        assertEquals(LocalTime.of(23, 59), Dates.currentTime(antesDeMedianocheEnBogota))
+
+        val medianocheEnBogota = Instant.parse("2026-10-12T05:00:00Z")
+        assertEquals(LocalDate.of(2026, 10, 12).toEpochDay(), Dates.today(medianocheEnBogota))
+        assertEquals(LocalTime.MIDNIGHT, Dates.currentTime(medianocheEnBogota))
     }
 }
