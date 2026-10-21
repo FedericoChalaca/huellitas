@@ -1,6 +1,6 @@
 # Ficha de Google Play (borrador listo para pegar)
 
-Estado (21 de octubre de 2026): textos, ícono, gráfico, capturas y política de privacidad listos. Lo único que falta para publicar es que **la app esté completa** (la parte de Nicolás): hoy hay pantallas con 🚧 y Play puede rechazar una app con pantallas vacías. Cuando esté completa: generar el `.aab` final y subirlo.
+Estado (21 de octubre de 2026): **todo listo para subir.** La app ya no tiene pantallas en construcción; el `.aab` firmado está en `release/huellitas-1.0.0.aab`. Los pasos exactos están en [`publicar-en-play.md`](publicar-en-play.md).
 
 ## Datos básicos
 
@@ -48,7 +48,7 @@ Hecha con Kotlin y Jetpack Compose como proyecto de la materia Aplicaciones Móv
 - Ícono 512×512: `icono-512.png` (sin transparencia).
 - Gráfico de funciones 1024×500: `grafico-funciones-1024x500.png` (sin transparencia).
 - Se regeneran con `docs/play/generar.mjs`.
-- **Capturas de teléfono:** 6 listas en `docs/play/capturas/` (1080×2160, sin transparencia, con una cuenta de prueba y datos inventados): Mis mascotas, Pendientes, Mis citas, Seguro, Afiliar a un plan y Urgencias. Play pide una relación de aspecto de 2:1 como máximo; por eso están recortadas del 1080×2400 del emulador. Son de pantallas que ya están terminadas. Si al final cambian mucho, se repiten con `docs/guia-diseno/`.
+- **Capturas de teléfono:** 8 listas en `docs/play/capturas/` (1080×2160, sin transparencia, con una cuenta de prueba y datos inventados): Mis mascotas, Pendientes, Mis citas, Seguro, Afiliar a un plan, Urgencias, Póliza y Cotización. Play pide una relación de aspecto de 2:1 como máximo; por eso están recortadas del 1080×2400 del emulador. Son de pantallas que ya están terminadas. Si al final cambian mucho, se repiten con `docs/guia-diseno/`.
 
 ## Contenido de la aplicación (respuestas)
 

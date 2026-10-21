@@ -2,7 +2,7 @@
 
 Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 de octubre de 2026.
 
-**Lo único que falta es la parte de Nicolás.** Todo lo demás está hecho o listo para el día de la entrega.
+**Todas las pantallas y funciones están hechas (21 de octubre de 2026).** Lo que falta es el diseño de Nicolás (dibujo a mano y Figma), las pruebas en la tablet y enviar la ficha a Play.
 
 ## Lo que pide el taller
 
@@ -22,12 +22,12 @@ Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 
 | Sección **configuración** | Hecho | `ui/OtherScreens.kt` |
 | Sección **créditos** (información del estudiante) | Hecho para Federico; falta el nombre de Nicolás (N-01) | `ui/OtherScreens.kt` |
 | Montaje en Android Studio | Hecho | `app/` |
-| Implementar las funcionalidades | Parte de Federico hecha (ver abajo); **falta la de Nicolás** | |
+| Implementar las funcionalidades | **Hecho**, incluidas las que estaban asignadas a Nicolás (Federico las terminó para poder publicar) | |
 | Probar en un dispositivo físico | **Falta (Federico):** conectar la tablet y correr el recorrido | tarjeta F-15 |
 | Nombre, recursos gráficos y descripción para el lanzamiento | Hecho | [`play-store.md`](play-store.md), `docs/play/` |
 | Firmar y generar el `.aab` | Hecho (se vuelve a generar al final) | `app\build\outputs\bundle\release\` |
 | Política de privacidad pública (la exige Play) | Hecho | https://federicochalaca.github.io/huellitas/politica-de-privacidad |
-| Capturas de pantalla (mín. 4, 1080 px) | Hecho: 6 | `docs/play/capturas/` |
+| Capturas de pantalla (mín. 4, 1080 px) | Hecho: 8 | `docs/play/capturas/` |
 | Publicar en Google Play | **Falta, y va al final**, cuando la app esté completa | tarjeta F-12 |
 | Presentación: arquitectura, vistas, funcionalidades y publicación | Guion listo | [`presentacion.md`](presentacion.md) |
 
@@ -40,7 +40,7 @@ Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 
 | Diseño en papel | 10 | **Falta (Nicolás, N-37)** |
 | Diseño en Figma | 10 | **Falta (Nicolás, N-38)** |
 | Montaje en Android Studio | 20 | Hecho |
-| Funcionalidades | 20 | **Mitad hecha; falta la de Nicolás** |
+| Funcionalidades | 20 | Hecho |
 | Publicación en Google Play | 20 | Listo para subir cuando la app esté completa |
 
 ## Funcionalidades hechas (Federico)
