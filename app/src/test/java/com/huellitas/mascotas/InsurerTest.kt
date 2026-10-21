@@ -16,6 +16,7 @@ import com.huellitas.mascotas.data.rutaDeMotivo
 import com.huellitas.mascotas.data.usoDeEjemplo
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -70,16 +71,24 @@ class InsurerTest {
     @Test
     fun unaCitaSoloSeAceptaSiTodoCuadra() {
         val hora = horariosDisponibles("norte", lunes).first()
-        assertNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, hora, lunes))
-        assertNotNull(errorDeCita("Paseo", MEDICINA_GENERAL, "norte", lunes, hora, lunes))
-        assertNotNull(errorDeCita("Especialista", "Astrología", "norte", lunes, hora, lunes))
-        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "no-existe", lunes, hora, lunes))
+        assertNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, hora, lunes, LocalTime.MIN))
+        assertNotNull(errorDeCita("Paseo", MEDICINA_GENERAL, "norte", lunes, hora, lunes, LocalTime.MIN))
+        assertNotNull(errorDeCita("Especialista", "Astrología", "norte", lunes, hora, lunes, LocalTime.MIN))
+        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "no-existe", lunes, hora, lunes, LocalTime.MIN))
         // Patitas Norte no tiene cardiología.
-        assertNotNull(errorDeCita("Especialista", "Cardiología", "norte", lunes, hora, lunes))
+        assertNotNull(errorDeCita("Especialista", "Cardiología", "norte", lunes, hora, lunes, LocalTime.MIN))
         // Ni días que ya pasaron, ni horas que la clínica no ofrece, ni domingos donde no abren.
-        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, hora, lunes + 1))
-        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, "23:00", lunes))
-        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", domingo, hora, domingo))
+        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, hora, lunes + 1, LocalTime.MIN))
+        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", lunes, "23:00", lunes, LocalTime.MIN))
+        assertNotNull(errorDeCita("Vacunación", MEDICINA_GENERAL, "norte", domingo, hora, domingo, LocalTime.MIN))
+    }
+
+    @Test
+    fun lasUrgenciasRequierenClinica24HorasYLasCitasDeHoyNoPuedenSerPasadas() {
+        val hora = horariosDisponibles("centro", lunes).first()
+        assertNotNull(errorDeCita("Urgencia", MEDICINA_GENERAL, "norte", lunes, hora, lunes, LocalTime.MIN))
+        assertNull(errorDeCita("Urgencia", MEDICINA_GENERAL, "centro", lunes, hora, lunes, LocalTime.MIN))
+        assertNotNull(errorDeCita("Consulta general", MEDICINA_GENERAL, "centro", lunes, hora, lunes, LocalTime.parse(hora)))
     }
 
     @Test

@@ -54,7 +54,6 @@ import com.huellitas.mascotas.ui.BackScaffold
 import com.huellitas.mascotas.ui.DateField
 import com.huellitas.mascotas.ui.EmptyState
 import com.huellitas.mascotas.ui.activityViewModel
-import java.time.LocalTime
 import kotlinx.coroutines.launch
 
 /**
@@ -95,7 +94,7 @@ fun PedirCitaScreen(
     val especialidad = if (elMotivo == "Especialista") especialidadElegida else MEDICINA_GENERAL
     val clinicas = clinicasPara(especialidad).filter { elMotivo != "Urgencia" || it.abierta24h }.sortedBy { it.distanciaKm }
     val clinicaId = clinicaElegida?.takeIf { id -> clinicas.any { it.id == id } }
-    val ahora = remember { LocalTime.now().let { hora(it.hour, it.minute) } }
+    val ahora = remember { Dates.currentTime().let { hora(it.hour, it.minute) } }
     val elDia = dia
     // Si la cita es para hoy, las horas que ya pasaron no se ofrecen.
     val horarios = if (clinicaId == null || elDia == null) emptyList()

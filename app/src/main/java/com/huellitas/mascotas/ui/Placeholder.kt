@@ -1,6 +1,7 @@
 package com.huellitas.mascotas.ui
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -26,7 +26,10 @@ import androidx.navigation.NavController
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-inline fun <reified T : ViewModel> activityViewModel(): T = viewModel<T>(LocalContext.current as ComponentActivity)
+inline fun <reified T : ViewModel> activityViewModel(): T {
+    val activity = LocalActivity.current as? ComponentActivity ?: error("Esta pantalla necesita una actividad compatible.")
+    return viewModel<T>(activity)
+}
 
 /** Tarjeta grande y tocable de un menú (Seguro, Más). */
 @OptIn(ExperimentalMaterial3Api::class)

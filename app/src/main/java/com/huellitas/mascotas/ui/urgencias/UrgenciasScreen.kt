@@ -45,11 +45,21 @@ fun UrgenciasScreen(nav: NavController, vm: CitasViewModel = viewModel()) {
     val clinicas = remember { CLINICAS.filter { it.abierta24h }.sortedBy { it.distanciaKm } }
     val scope = rememberCoroutineScope()
     var eligiendo by remember { mutableStateOf(false) }
+    var guardando by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
     var citaCreada by remember { mutableStateOf<Long?>(null) }
 
     fun pedir(petId: Long) {
+        if (guardando) return
         eligiendo = false
-        scope.launch { citaCreada = vm.pedirUrgencia(petId) }
+        guardando = true
+        error = null
+        scope.launch {
+            val id = vm.pedirUrgencia(petId)
+            guardando = false
+            if (id == null) error = "No se pudo pedir la atención. Vuelve a intentarlo."
+            else citaCreada = id
+        }
     }
 
     BackScaffold("Urgencias 24 h", onBack = { nav.popBackStack() }) { padding ->
@@ -58,14 +68,20 @@ fun UrgenciasScreen(nav: NavController, vm: CitasViewModel = viewModel()) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            error?.let { mensaje ->
+                item {
+                    Text(mensaje, color = MaterialTheme.colorScheme.error)
+                }
+            }
             item {
                 Button(
                     // Con una sola mascota no hace falta preguntar para cuál es.
                     onClick = { if (pets.size == 1) pedir(pets.first().id) else eligiendo = true },
+                    enabled = !guardando,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError),
                     contentPadding = PaddingValues(vertical = 16.dp),
-                ) { Text("🚨 Pedir atención de urgencia ahora") }
+                ) { Text(if (guardando) "Registrando…" else "🚨 Pedir atención de urgencia ahora") }
             }
             item {
                 Text(
