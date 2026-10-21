@@ -40,7 +40,7 @@ class CitasViewModel(app: Application) : OwnerViewModel(app) {
     suspend fun pedirCita(petId: Long, motivo: String, especialidad: String, clinicaId: String, day: Long, slot: String, notas: String): Long? {
         val owner = uid() ?: return null
         if (db.pets().get(petId, owner) == null) return null
-        if (errorDeCita(motivo, especialidad, clinicaId, day, slot, Dates.today()) != null) return null
+        if (errorDeCita(motivo, especialidad, clinicaId, day, slot, Dates.today(), LocalTime.now()) != null) return null
         return db.appointments().upsert(
             Appointment(
                 petId = petId, reason = motivo, specialty = especialidad, clinicId = clinicaId,

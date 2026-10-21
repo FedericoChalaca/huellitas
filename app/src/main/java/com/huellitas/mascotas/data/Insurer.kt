@@ -2,6 +2,7 @@ package com.huellitas.mascotas.data
 
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Locale
 
 // La "aseguradora" de la demo. NO existe ninguna aseguradora real detrás: todo lo que sigue son
@@ -106,15 +107,25 @@ fun hora(h: Int, m: Int): String = String.format(Locale.ROOT, "%02d:%02d", h, m)
 const val MEDICINA_GENERAL = "Medicina general"
 
 /** Por qué no se puede pedir esa cita, o null si todo está bien. */
-fun errorDeCita(motivo: String, especialidad: String, clinicaId: String, day: Long, slot: String, today: Long): String? {
+fun errorDeCita(
+    motivo: String,
+    especialidad: String,
+    clinicaId: String,
+    day: Long,
+    slot: String,
+    today: Long,
+    now: LocalTime = LocalTime.now(),
+): String? {
     val clinica = clinicaPorId(clinicaId)
     return when {
         motivo !in MOTIVOS -> "Elige el motivo de la cita."
         especialidad !in ESPECIALIDADES -> "Elige la especialidad."
         clinica == null -> "Elige la clínica."
         especialidad !in clinica.especialidades -> "Esa clínica no atiende $especialidad."
+        motivo == "Urgencia" && !clinica.abierta24h -> "Para una urgencia, elige una clínica abierta 24 horas."
         day < today -> "Esa fecha ya pasó."
         slot !in horariosDisponibles(clinicaId, day) -> "Esa hora ya no está disponible."
+        day == today && LocalTime.parse(slot) <= now -> "Esa hora ya pasó."
         else -> null
     }
 }
