@@ -12,10 +12,7 @@ import androidx.navigation.NavController
 import com.huellitas.mascotas.ui.MenuCard
 import com.huellitas.mascotas.ui.TabScaffold
 
-/**
- * Pestaña Más: ajustes, créditos y lo que falte. Tareas de Nicolás: N-30 (completar el menú),
- * N-31 (que Ajustes y Créditos tengan flecha de volver) y N-32 (pantalla "Acerca de la demo").
- */
+/** Pestaña Más: accesos directos, ajustes, créditos y la pantalla que explica qué es de mentira. */
 @Composable
 fun MasScreen(nav: NavController) {
     TabScaffold(nav, "mas", "Más") { padding ->
@@ -23,9 +20,11 @@ fun MasScreen(nav: NavController) {
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            MenuCard("🚨", "Urgencias 24 h", "Clínicas abiertas ahora") { nav.navigate("urgencias") }
+            MenuCard("💊", "Medicamentos", "Cotiza con el descuento de tu plan") { nav.navigate("medicamentos") }
             MenuCard("⚙️", "Ajustes", "Tema, avisos y tu cuenta") { nav.navigate("settings") }
             MenuCard("ℹ️", "Créditos", "Quién hizo esta app") { nav.navigate("credits") }
-            // TODO(N-32): MenuCard "Acerca de la demo"
+            MenuCard("🎓", "Acerca de la demo", "Qué es real y qué no") { nav.navigate("acerca") }
         }
     }
 }

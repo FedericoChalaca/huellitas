@@ -18,10 +18,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * Citas con las clínicas aliadas. Pedir una cita ya está hecho (Federico);
- * cancelar y reprogramar son de Nicolás (N-25 y N-26).
+ * y también cancelar y reprogramar.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CitasViewModel(app: Application) : OwnerViewModel(app) {
@@ -63,6 +64,21 @@ class CitasViewModel(app: Application) : OwnerViewModel(app) {
         )
     }
 
-    // TODO(N-25): fun cancelar(id: Long)
-    // TODO(N-26): suspend fun reprogramar(id: Long, day: Long, slot: String): Boolean
+    /** La cita no se borra: queda con estado «Cancelada» y pasa al historial. */
+    fun cancelar(id: Long) {
+        viewModelScope.launch {
+            val owner = uid() ?: return@launch
+            db.appointments().setStatus(id, AppointmentStatus.CANCELLED, owner)
+        }
+    }
+
+    /** Cambia el día y la hora de una cita vigente; vuelve a quedar «Solicitada». Devuelve false si no se puede. */
+    suspend fun reprogramar(id: Long, day: Long, slot: String): Boolean {
+        val owner = uid() ?: return false
+        val actual = db.appointments().get(id, owner) ?: return false
+        if (actual.status != AppointmentStatus.REQUESTED && actual.status != AppointmentStatus.CONFIRMED) return false
+        if (errorDeCita(actual.reason, actual.specialty, actual.clinicId, day, slot, Dates.today()) != null) return false
+        db.appointments().upsert(actual.copy(day = day, slot = slot, status = AppointmentStatus.REQUESTED))
+        return true
+    }
 }

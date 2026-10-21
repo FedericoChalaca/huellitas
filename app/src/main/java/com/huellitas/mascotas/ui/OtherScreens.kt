@@ -52,7 +52,7 @@ fun SettingsScreen(nav: NavController, vm: MainViewModel) {
     val user = (session as? Session.LoggedIn)?.user
     var askDelete by remember { mutableStateOf(false) }
 
-    TabScaffold(nav, "mas", "Ajustes") { padding ->
+    BackScaffold("Ajustes", onBack = { nav.popBackStack() }) { padding ->
         Column(
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -119,7 +119,7 @@ fun CreditsScreen(nav: NavController) {
         runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull() ?: "1.0.0"
     }
 
-    TabScaffold(nav, "mas", "Créditos") { padding ->
+    BackScaffold("Créditos", onBack = { nav.popBackStack() }) { padding ->
         Column(
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -130,12 +130,12 @@ fun CreditsScreen(nav: NavController) {
                     Column {
                         Text("Huellitas", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         Text("Versión $version", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("Control de mascotas y vacunación", style = MaterialTheme.typography.bodySmall)
+                        Text("Mascotas, citas y seguro de demostración", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
             InfoCard("Trabajo académico") {
-                CreditRow("Estudiante", "Federico Martínez López")
+                CreditRow("Estudiantes", "Federico Martínez López y Nicolás Castrillón")
                 CreditRow("Programa", "Ingeniería de Sistemas")
                 CreditRow("Universidad", "Universidad Pontificia Bolivariana")
                 CreditRow("Materia", "Aplicaciones Móviles")

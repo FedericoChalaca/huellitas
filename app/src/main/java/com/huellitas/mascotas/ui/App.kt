@@ -25,6 +25,7 @@ import com.huellitas.mascotas.ui.citas.CitaDetalleScreen
 import com.huellitas.mascotas.ui.citas.CitasScreen
 import com.huellitas.mascotas.ui.citas.PedirCitaScreen
 import com.huellitas.mascotas.ui.desparasitacion.DesparasitacionFormScreen
+import com.huellitas.mascotas.ui.mas.AcercaScreen
 import com.huellitas.mascotas.ui.mas.MasScreen
 import com.huellitas.mascotas.ui.medicamentos.CotizacionScreen
 import com.huellitas.mascotas.ui.medicamentos.HistorialCotizacionesScreen
@@ -89,6 +90,7 @@ private fun MainNav(vm: MainViewModel) {
         // Más
         composable("settings") { SettingsScreen(nav, vm) }
         composable("credits") { CreditsScreen(nav) }
+        composable("acerca") { AcercaScreen(nav) }
 
         // Mascotas, vacunas y desparasitaciones
         composable("pet/{id}", arguments = listOf(long("id"))) { entry ->

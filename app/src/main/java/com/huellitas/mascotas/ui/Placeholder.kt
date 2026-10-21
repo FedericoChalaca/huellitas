@@ -20,23 +20,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
-// Pantallas "en construcción": cada una dice qué tarjeta de Trello la completa.
-// Cuando termines una, borra su llamada a PantallaPendiente / PestanaPendiente.
-
-@Composable
-fun PantallaPendiente(nav: NavController, titulo: String, tarea: String) {
-    BackScaffold(titulo, onBack = { nav.popBackStack() }) { padding ->
-        EmptyState("🚧", titulo, tarea, Modifier.padding(padding))
-    }
-}
-
-@Composable
-fun PestanaPendiente(nav: NavController, ruta: String, titulo: String, tarea: String) {
-    TabScaffold(nav, ruta, titulo) { padding ->
-        EmptyState("🚧", titulo, tarea, Modifier.padding(padding))
-    }
-}
-
 /**
  * Un ViewModel que vive mientras viva la actividad entera, no una sola pantalla: sirve para compartir estado
  * entre dos pantallas (por ejemplo el carrito de medicamentos entre Medicamentos y Cotización).
