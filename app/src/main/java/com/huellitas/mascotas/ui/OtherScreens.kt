@@ -61,7 +61,7 @@ fun SettingsScreen(nav: NavController, vm: MainViewModel) {
                 Text(user?.name ?: "", style = MaterialTheme.typography.titleLarge)
                 Text(user?.email ?: "", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(
-                    "Tus mascotas y vacunas se guardan solo en este celular.",
+                    "Tus mascotas y sus registros se guardan solo en este celular.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -91,7 +91,7 @@ fun SettingsScreen(nav: NavController, vm: MainViewModel) {
     if (askDelete) {
         ConfirmDialog(
             title = "¿Borrar tu cuenta?",
-            text = "Se borran tu cuenta, tus mascotas y sus vacunas de este celular. No se puede deshacer.",
+            text = "Se borran tu cuenta, tus mascotas, sus vacunas, desparasitaciones, citas, pólizas y cotizaciones de este celular. No se puede deshacer.",
             confirmLabel = "Borrar todo",
             onConfirm = {
                 askDelete = false
