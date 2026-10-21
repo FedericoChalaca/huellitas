@@ -11,8 +11,8 @@ Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 
 | Cambiar de grupo | Hecho: Federico y Nicolás | Créditos |
 | Un tema de la lista: «Control mascota (vacunación…)» | Hecho | La app entera |
 | **Kotlin y Android Studio (nativa)** | Hecho | [`por-que-es-nativa.md`](por-que-es-nativa.md) |
-| Wireframe en papel | **Falta (Nicolás, N-37)** | `docs/wireframes/boceto/` |
-| Wireframe digital en Figma, subido al repo | Hecho (falta abrir el acceso del enlace y exportar el PNG, lo hace Federico en F-14) | [Figma](https://www.figma.com/design/AuM0H9mTpmj8dgmwznI7ku/Huellitas---Wireframes) y `docs/wireframes/` |
+| Wireframe en papel | **Falta (Nicolás, N-37)**; se guía con [`guia-diseno/`](guia-diseno/LEEME.md) | `docs/wireframes/boceto/` |
+| Wireframe digital en Figma, subido al repo | **Falta (Nicolás, N-38).** Hay un Figma de referencia hecho por Federico, solo como guía | [referencia](https://www.figma.com/design/AuM0H9mTpmj8dgmwznI7ku/Huellitas---Wireframes) y `docs/wireframes/` |
 | Sección **login** | Hecho | `ui/AuthScreens.kt` |
 | Sección **registro** | Hecho | `ui/AuthScreens.kt` |
 | Sección **menú** | Hecho: barra de 5 pestañas | `ui/Components.kt` |
@@ -26,7 +26,9 @@ Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 
 | Probar en un dispositivo físico | **Falta (Federico):** conectar la tablet y correr el recorrido | tarjeta F-15 |
 | Nombre, recursos gráficos y descripción para el lanzamiento | Hecho | [`play-store.md`](play-store.md), `docs/play/` |
 | Firmar y generar el `.aab` | Hecho (se vuelve a generar al final) | `app\build\outputs\bundle\release\` |
-| Publicar en Google Play | **Falta, y va al final** | tarjeta F-12 |
+| Política de privacidad pública (la exige Play) | Hecho | https://federicochalaca.github.io/huellitas/politica-de-privacidad |
+| Capturas de pantalla (mín. 4, 1080 px) | Hecho: 6 | `docs/play/capturas/` |
+| Publicar en Google Play | **Falta, y va al final**, cuando la app esté completa | tarjeta F-12 |
 | Presentación: arquitectura, vistas, funcionalidades y publicación | Guion listo | [`presentacion.md`](presentacion.md) |
 
 ## Criterios de evaluación
@@ -36,7 +38,7 @@ Enunciado: https://xacarana.com/cursos/aplicaciones_moviles/#/6. Revisado el 21 
 | Asistencia a clase | 10 | De cada quien |
 | Uso de repositorio y colaboración en el nuevo equipo | 10 | Repo y Trello al día; **faltan los commits de Nicolás** |
 | Diseño en papel | 10 | **Falta (Nicolás, N-37)** |
-| Diseño en Figma | 10 | Hecho |
+| Diseño en Figma | 10 | **Falta (Nicolás, N-38)** |
 | Montaje en Android Studio | 20 | Hecho |
 | Funcionalidades | 20 | **Mitad hecha; falta la de Nicolás** |
 | Publicación en Google Play | 20 | Listo para subir cuando la app esté completa |
@@ -47,7 +49,7 @@ Cuentas locales (registro, login, cerrar sesión, borrar cuenta), mascotas, vacu
 
 ## Lo que falta de Nicolás (en Trello, tarjetas N-00 a N-37)
 
-Desparasitaciones (N-02 a N-07), medicamentos y cotización (N-08 a N-20), planes y póliza (N-21 a N-23), detalle, cancelar y reprogramar cita (N-24 a N-26), botones de llamar y cómo llegar y primeros auxilios (N-27 a N-29), menú Más, Ajustes y Créditos (N-30 a N-32), README, capturas, política de privacidad y revisión de textos (N-33 a N-36) y los wireframes a mano (N-37).
+Desparasitaciones (N-02 a N-07), medicamentos y cotización (N-08 a N-20), planes y póliza (N-21 a N-23), detalle, cancelar y reprogramar cita (N-24 a N-26), botones de llamar y cómo llegar y primeros auxilios (N-27 a N-29), menú Más, Ajustes y Créditos (N-30 a N-32), README y revisión de textos (N-33 y N-36), el dibujo a mano (N-37) y el Figma (N-38). La política de privacidad y las capturas para Play (N-34 y N-35) ya las hizo Federico.
 
 ## Qué se hace cuando él termine
 
@@ -55,5 +57,5 @@ Desparasitaciones (N-02 a N-07), medicamentos y cotización (N-08 a N-20), plane
 2. Recorrer la app completa en la tablet (F-15).
 3. Subir `versionCode` si hace falta y generar el `.aab` final.
 4. Capturas y política de privacidad en la ficha, y publicar en Play (F-12).
-5. Abrir el acceso del Figma y subir el PNG (F-14).
+5. Revisar el dibujo y el Figma de Nicolás (F-14).
 6. Presentar con el guion de `presentacion.md`.

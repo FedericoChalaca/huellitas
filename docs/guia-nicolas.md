@@ -82,14 +82,14 @@ La parte de Federico ya está unida en `main`: pedir cita, Mis citas, Pendientes
 | Orden | Tarjetas | Qué es |
 |---|---|---|
 | 1 | N-00, N-01 | Preparar el computador y tu primer commit (tu nombre en Créditos) |
-| 2 | N-37 | Dibujar a mano los wireframes del Figma (no es código: hazlo cuando quieras) |
+| 2 | N-37 y N-38 | Dibujo a mano y Figma, guiándote con `docs/guia-diseno/` (no es código: hazlos cuando quieras) |
 | 3 | N-02 a N-07 | Desparasitaciones |
 | 4 | N-08 a N-20 | Medicamentos y cotización |
 | 5 | N-21 a N-23 | Planes y póliza |
 | 6 | N-24 a N-26 | Detalle de la cita, cancelar y reprogramar |
 | 7 | N-27 a N-29 | Llamar, cómo llegar y primeros auxilios |
 | 8 | N-30 a N-32 | Más, Ajustes, Créditos |
-| 9 | N-33 a N-36 | README, capturas, política de privacidad y revisión de textos |
+| 9 | N-33 y N-36 | README y revisión de textos (N-34 y N-35, capturas y política de privacidad, ya las hizo Federico) |
 
 Dentro de cada grupo ve en orden: casi siempre la tarjeta siguiente usa lo de la anterior (lo dice el renglón «Antes»).
 

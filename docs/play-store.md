@@ -1,6 +1,6 @@
 # Ficha de Google Play (borrador listo para pegar)
 
-Estado: textos, ícono y gráfico listos. Faltan las capturas finales, la política de privacidad publicada y la subida del `.aab` final, que van **cuando la app esté completa** (la parte de Nicolás). No publicar antes: hoy hay pantallas con 🚧.
+Estado (21 de octubre de 2026): textos, ícono, gráfico, capturas y política de privacidad listos. Lo único que falta para publicar es que **la app esté completa** (la parte de Nicolás): hoy hay pantallas con 🚧 y Play puede rechazar una app con pantallas vacías. Cuando esté completa: generar el `.aab` final y subirlo.
 
 ## Datos básicos
 
@@ -48,7 +48,7 @@ Hecha con Kotlin y Jetpack Compose como proyecto de la materia Aplicaciones Móv
 - Ícono 512×512: `icono-512.png` (sin transparencia).
 - Gráfico de funciones 1024×500: `grafico-funciones-1024x500.png` (sin transparencia).
 - Se regeneran con `docs/play/generar.mjs`.
-- **Capturas de teléfono:** mínimo 4, de 1080 px o más por lado. Se toman al final con la app completa, con una cuenta de prueba y datos obviamente inventados (tarjeta N-34, Nicolás). Mostrar: Mis mascotas, Detalle, Pendientes, Pedir cita, Seguro y Cotización.
+- **Capturas de teléfono:** 6 listas en `docs/play/capturas/` (1080×2160, sin transparencia, con una cuenta de prueba y datos inventados): Mis mascotas, Pendientes, Mis citas, Seguro, Afiliar a un plan y Urgencias. Play pide una relación de aspecto de 2:1 como máximo; por eso están recortadas del 1080×2400 del emulador. Son de pantallas que ya están terminadas. Si al final cambian mucho, se repiten con `docs/guia-diseno/`.
 
 ## Contenido de la aplicación (respuestas)
 
@@ -61,8 +61,8 @@ Hecha con Kotlin y Jetpack Compose como proyecto de la materia Aplicaciones Móv
 | Seguridad de los datos | No recopila ni comparte datos: todo queda en el dispositivo. Sin permisos |
 | Servicios financieros | Declarar que **no** ofrece servicios financieros reales; el seguro es una simulación y la ficha lo dice |
 | Salud | No es una app médica: no diagnostica ni da tratamientos (los primeros auxilios son consejos generales con aviso) |
-| Política de privacidad | URL pública (la redacta Nicolás en `docs/politica-de-privacidad.md`, tarjeta N-35, y se publica en una página web) |
-| Eliminación de cuenta | Dentro de la app: Más → Ajustes → «Borrar mi cuenta y mis datos». Play también pide una URL: la misma página de la política, en la sección «Cómo borrar tus datos» |
+| Política de privacidad | **https://federicochalaca.github.io/huellitas/politica-de-privacidad** (ya publicada; el texto está en `docs/politica-de-privacidad.md`) |
+| Eliminación de cuenta | Dentro de la app: Más → Ajustes → «Borrar mi cuenta y mis datos». Play también pide una URL: la misma página de la política, sección «Cómo borrar tus datos» (https://federicochalaca.github.io/huellitas/politica-de-privacidad#cómo-borrar-tus-datos) |
 
 ## Riesgo a vigilar
 
