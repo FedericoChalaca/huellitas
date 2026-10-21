@@ -110,4 +110,16 @@ class LogicTest {
         assertEquals(LocalDate.of(2026, 10, 12).toEpochDay(), Dates.today(medianocheEnBogota))
         assertEquals(LocalTime.MIDNIGHT, Dates.currentTime(medianocheEnBogota))
     }
+
+    @Test
+    fun recordatoriosMensualesRespetanFinDeMesYElLimiteDelAviso() {
+        val enero2025 = LocalDate.of(2025, 1, 31).toEpochDay()
+        val enero2024 = LocalDate.of(2024, 1, 31).toEpochDay()
+        assertEquals(LocalDate.of(2025, 2, 28).toEpochDay(), Dates.addMonths(enero2025, 1))
+        assertEquals(LocalDate.of(2024, 2, 29).toEpochDay(), Dates.addMonths(enero2024, 1))
+
+        val hoy = LocalDate.of(2026, 10, 12).toEpochDay()
+        assertEquals(VaccineStatus.SOON, vaccineStatus(hoy, hoy, 0))
+        assertEquals(VaccineStatus.OK, vaccineStatus(hoy + 1, hoy, 0))
+    }
 }
