@@ -2,6 +2,11 @@
 
 package com.huellitas.mascotas.ui.medicamentos
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,13 +17,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,8 +50,13 @@ import com.huellitas.mascotas.data.pesos
 import com.huellitas.mascotas.data.planPorId
 import com.huellitas.mascotas.data.speciesEmoji
 import com.huellitas.mascotas.ui.BackScaffold
+import com.huellitas.mascotas.ui.BotonPrincipal
 import com.huellitas.mascotas.ui.EmptyState
+import com.huellitas.mascotas.ui.NotaDemo
+import com.huellitas.mascotas.ui.SpeciesBadge
+import com.huellitas.mascotas.ui.Tarjeta
 import com.huellitas.mascotas.ui.activityViewModel
+import com.huellitas.mascotas.ui.aparecer
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -60,10 +75,10 @@ fun CotizacionScreen(nav: NavController, seguro: SeguroViewModel = viewModel()) 
 
     BackScaffold("Mi cotización", onBack = { nav.popBackStack() }) { padding ->
         if (carrito.isEmpty()) {
-            Column(Modifier.padding(padding)) {
-                EmptyState("🧾", "Tu cotización está vacía", "Agrega medicamentos desde el catálogo.", Modifier.weight(1f))
-                OutlinedButton(onClick = { nav.popBackStack() }, modifier = Modifier.fillMaxWidth().padding(16.dp)) { Text("Ver catálogo") }
-            }
+            EmptyState(
+                "🧾", "Tu cotización está vacía", "Agrega medicamentos desde el catálogo.", Modifier.padding(padding),
+                accion = { OutlinedButton(onClick = { nav.popBackStack() }) { Text("Ver catálogo") } },
+            )
             return@BackScaffold
         }
         LazyColumn(
@@ -72,7 +87,7 @@ fun CotizacionScreen(nav: NavController, seguro: SeguroViewModel = viewModel()) 
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Text("¿Para qué mascota?", style = MaterialTheme.typography.labelLarge)
+                Text("¿Para qué mascota?", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(selected = petId == null, onClick = { petId = null }, label = { Text("Sin mascota") })
                     pets.forEach { p ->
@@ -80,24 +95,33 @@ fun CotizacionScreen(nav: NavController, seguro: SeguroViewModel = viewModel()) 
                     }
                 }
             }
-            items(carrito, key = { it.medicamento.id }) { linea ->
-                Card(Modifier.fillMaxWidth()) {
+            itemsIndexed(carrito, key = { _, l -> l.medicamento.id }) { i, linea ->
+                Tarjeta(Modifier.fillMaxWidth().animateItem().aparecer(i)) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        SpeciesBadge("💊", size = 40)
                         Column(Modifier.weight(1f)) {
                             Text(linea.medicamento.nombre, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text(pesos(linea.medicamento.precioCop), style = MaterialTheme.typography.bodyMedium)
+                            Text(pesos(linea.medicamento.precioCop), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        OutlinedButton(onClick = { vm.cambiarCantidad(linea.medicamento, linea.cantidad - 1) }) { Text("−") }
-                        Text("${linea.cantidad}", style = MaterialTheme.typography.titleMedium)
-                        OutlinedButton(onClick = { vm.cambiarCantidad(linea.medicamento, linea.cantidad + 1) }) { Text("+") }
+                        // Selector de cantidad en una pastilla: − número +
+                        Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(50)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                TextButton(onClick = { vm.cambiarCantidad(linea.medicamento, linea.cantidad - 1) }) { Text("−", fontWeight = FontWeight.Bold) }
+                                AnimatedContent(linea.cantidad, transitionSpec = { (fadeIn() + scaleIn()) togetherWith fadeOut() }, label = "cantidad") { n ->
+                                    Text("$n", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                }
+                                TextButton(onClick = { vm.cambiarCantidad(linea.medicamento, linea.cantidad + 1) }) { Text("+", fontWeight = FontWeight.Bold) }
+                            }
+                        }
                     }
                 }
             }
             item {
-                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Tarjeta(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Fila("Subtotal", pesos(totales.subtotalCop))
                         Fila("Seguro paga (${plan?.coberturaPct ?: 0} %)", "- ${pesos(totales.coberturaCop)}")
+                        HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
                         Fila("Tú pagas", pesos(totales.copagoCop), fuerte = true)
                         if (petId != null && plan == null) {
                             Text("Esta mascota no tiene póliza: pagas el 100 %.", style = MaterialTheme.typography.bodySmall)
@@ -106,20 +130,15 @@ fun CotizacionScreen(nav: NavController, seguro: SeguroViewModel = viewModel()) 
                 }
             }
             item {
-                Button(
+                BotonPrincipal(
+                    "Guardar cotización",
                     onClick = {
                         scope.launch {
                             if (vm.guardarCotizacion(petId, totales)) nav.navigate("cotizaciones") { popUpTo("seguro") }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text("Guardar cotización") }
-                Text(
-                    "Demostración académica: no se compra ni se cobra nada.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 8.dp),
                 )
+                NotaDemo("Demostración académica: no se compra ni se cobra nada.", Modifier.padding(top = 8.dp))
             }
         }
     }
@@ -127,8 +146,12 @@ fun CotizacionScreen(nav: NavController, seguro: SeguroViewModel = viewModel()) 
 
 @Composable
 private fun Fila(etiqueta: String, valor: String, fuerte: Boolean = false) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(etiqueta, fontWeight = if (fuerte) FontWeight.Bold else FontWeight.Normal)
-        Text(valor, fontWeight = if (fuerte) FontWeight.Bold else FontWeight.Normal)
+    val estilo = if (fuerte) MaterialTheme.typography.titleLarge else MaterialTheme.typography.bodyLarge
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Text(etiqueta, style = estilo, fontWeight = if (fuerte) FontWeight.Bold else FontWeight.Normal)
+        // Los totales cambian con un fundido al subir o bajar cantidades.
+        AnimatedContent(valor, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "valorFila") { v ->
+            Text(v, style = estilo, fontWeight = if (fuerte) FontWeight.Bold else FontWeight.Normal)
+        }
     }
 }

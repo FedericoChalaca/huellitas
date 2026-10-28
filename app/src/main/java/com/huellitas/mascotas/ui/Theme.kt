@@ -1,11 +1,14 @@
 package com.huellitas.mascotas.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import com.huellitas.mascotas.data.ThemeMode
 
 // Verde bosque y naranja cálido sobre crema: se ve como una app de mascotas, no como la plantilla por defecto.
@@ -64,3 +67,22 @@ fun HuellitasTheme(mode: ThemeMode, content: @Composable () -> Unit) {
     }
     MaterialTheme(colorScheme = if (dark) DarkColors else LightColors, content = content)
 }
+
+/** true con el tema oscuro: el fondo es oscuro. */
+val ColorScheme.esOscuro: Boolean get() = background.luminance() < 0.5f
+
+/** Degradado verde de los encabezados. En oscuro baja el brillo para no encandilar. */
+@Composable
+fun encabezadoBrush(): Brush {
+    val scheme = MaterialTheme.colorScheme
+    return if (scheme.esOscuro) Brush.linearGradient(listOf(Color(0xFF1B5A48), Color(0xFF0E3B2F)))
+    else Brush.linearGradient(listOf(scheme.primary, Color(0xFF4A9A80)))
+}
+
+/** Color fijo del encabezado, para las barras que no aceptan degradado. */
+@Composable
+fun colorEncabezado(): Color = if (MaterialTheme.colorScheme.esOscuro) Color(0xFF16503F) else MaterialTheme.colorScheme.primary
+
+/** Texto e íconos sobre el encabezado. */
+@Composable
+fun colorSobreEncabezado(): Color = if (MaterialTheme.colorScheme.esOscuro) Color(0xFFDDF3EA) else Color.White

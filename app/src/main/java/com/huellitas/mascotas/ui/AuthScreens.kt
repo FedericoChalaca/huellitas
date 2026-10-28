@@ -17,7 +17,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,20 +50,64 @@ import kotlinx.coroutines.launch
 
 @Composable
 private fun AuthLayout(title: String, subtitle: String, content: @Composable ColumnScope.() -> Unit) {
-    Column(
-        Modifier.fillMaxSize().systemBarsPadding().imePadding().verticalScroll(rememberScrollState()).padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(Modifier.height(24.dp))
-        Box(Modifier.size(84.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape), contentAlignment = Alignment.Center) {
-            Text("🐾", fontSize = 40.sp)
+    val sobre = colorSobreEncabezado()
+    Box(Modifier.fillMaxSize()) {
+        // Medialuna verde arriba; el formulario va en una tarjeta blanca que se monta encima.
+        Box(
+            Modifier.fillMaxWidth().height(300.dp)
+                .background(encabezadoBrush(), RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)),
+        ) { HuellasDeAdorno(Modifier.matchParentSize()) }
+        Column(
+            Modifier.fillMaxSize().systemBarsPadding().imePadding().verticalScroll(rememberScrollState()).padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(Modifier.height(8.dp))
+            Box(
+                Modifier.size(96.dp).flotar(4f).background(sobre.copy(alpha = 0.2f), CircleShape),
+                contentAlignment = Alignment.Center,
+            ) { Text("🐾", fontSize = 46.sp) }
+            Text(
+                title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = sobre,
+                modifier = Modifier.aparecer(1),
+            )
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodyLarge,
+                color = sobre.copy(alpha = 0.85f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.aparecer(2),
+            )
+            Spacer(Modifier.height(4.dp))
+            Tarjeta(Modifier.fillMaxWidth().aparecer(3)) {
+                Column(
+                    Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    content = content,
+                )
+            }
         }
-        Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-        Text(subtitle, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(8.dp))
-        content()
     }
+}
+
+/** Campo de texto con ícono a la izquierda, del mismo estilo en login y registro. */
+@Composable
+private fun CampoConIcono(value: String, onChange: (String) -> Unit, label: String, icon: ImageVector, keyboardOptions: KeyboardOptions) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onChange,
+        label = { Text(label) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        leadingIcon = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+        keyboardOptions = keyboardOptions,
+    )
 }
 
 @Composable
@@ -69,6 +119,8 @@ private fun PasswordField(value: String, onChange: (String) -> Unit, label: Stri
         label = { Text(label) },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = imeAction),
         // canFocus = false: con «Siguiente» del teclado el foco pasa al campo de abajo, no a este botón.
@@ -89,17 +141,14 @@ fun LoginScreen(vm: MainViewModel, onRegister: () -> Unit) {
     val scope = rememberCoroutineScope()
 
     AuthLayout("Bienvenido de nuevo", "Entra para ver a tus mascotas y sus vacunas") {
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it; error = null },
-            label = { Text("Correo") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+        CampoConIcono(
+            email, { email = it; error = null }, "Correo", Icons.Filled.Email,
+            KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
         PasswordField(password, { password = it; error = null }, "Contraseña", ImeAction.Done)
-        error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
-        Button(
+        MensajeError(error)
+        BotonPrincipal(
+            "Entrar",
             onClick = {
                 busy = true
                 error = null
@@ -109,8 +158,9 @@ fun LoginScreen(vm: MainViewModel, onRegister: () -> Unit) {
                 }
             },
             enabled = !busy && email.isNotBlank() && password.isNotEmpty(),
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(if (busy) "Entrando…" else "Entrar") }
+            cargando = busy,
+            textoCargando = "Entrando…",
+        )
         TextButton(onClick = onRegister) { Text("¿No tienes cuenta? Crear una") }
     }
 }
@@ -126,30 +176,20 @@ fun RegisterScreen(vm: MainViewModel, onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
 
     AuthLayout("Crea tu cuenta", "Se guarda solo en este celular") {
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it; error = null },
-            label = { Text("Tu nombre") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        )
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it; error = null },
-            label = { Text("Correo") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+        CampoConIcono(name, { name = it; error = null }, "Tu nombre", Icons.Filled.Person, KeyboardOptions(imeAction = ImeAction.Next))
+        CampoConIcono(
+            email, { email = it; error = null }, "Correo", Icons.Filled.Email,
+            KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
         )
         PasswordField(password, { password = it; error = null }, "Contraseña (mínimo 8)", ImeAction.Next)
         PasswordField(repeat, { repeat = it; error = null }, "Repite la contraseña", ImeAction.Done)
-        error?.let { Text(it, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
-        Button(
+        MensajeError(error)
+        BotonPrincipal(
+            "Crear cuenta",
             onClick = {
                 if (password != repeat) {
                     error = "Las contraseñas no coinciden."
-                    return@Button
+                    return@BotonPrincipal
                 }
                 busy = true
                 error = null
@@ -159,8 +199,9 @@ fun RegisterScreen(vm: MainViewModel, onBack: () -> Unit) {
                 }
             },
             enabled = !busy && name.isNotBlank() && email.isNotBlank() && password.isNotEmpty(),
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(if (busy) "Creando…" else "Crear cuenta") }
+            cargando = busy,
+            textoCargando = "Creando…",
+        )
         TextButton(onClick = onBack) { Text("Ya tengo cuenta") }
     }
 }
