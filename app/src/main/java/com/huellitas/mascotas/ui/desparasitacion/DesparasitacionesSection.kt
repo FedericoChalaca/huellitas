@@ -1,10 +1,15 @@
 package com.huellitas.mascotas.ui.desparasitacion
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -35,8 +40,15 @@ import com.huellitas.mascotas.data.Dates
 import com.huellitas.mascotas.data.Deworming
 import com.huellitas.mascotas.data.vaccineStatus
 import com.huellitas.mascotas.ui.ConfirmDialog
+import com.huellitas.mascotas.ui.SeccionTitulo
+import com.huellitas.mascotas.ui.SpeciesBadge
 import com.huellitas.mascotas.ui.StatusChip
+import com.huellitas.mascotas.ui.Tarjeta
+import com.huellitas.mascotas.ui.VacioEnLinea
 import com.huellitas.mascotas.ui.activityViewModel
+import com.huellitas.mascotas.ui.aparecer
+import com.huellitas.mascotas.ui.colorDeEstado
+import com.huellitas.mascotas.ui.textoDias
 
 /**
  * Sección «Desparasitaciones» del detalle de la mascota: el título, el botón «Registrar» y la lista.
@@ -51,31 +63,39 @@ fun DesparasitacionesSection(nav: NavController, petId: Long, vm: Desparasitacio
     val today = remember { Dates.today() }
     var aBorrar by remember { mutableStateOf<Deworming?>(null) }
 
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Desparasitaciones", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 8.dp)) {
+        SeccionTitulo("Desparasitaciones") {
             FilledTonalButton(onClick = { nav.navigate("deworming/form/$petId/0") }) {
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Spacer(Modifier.width(6.dp))
                 Text("Registrar")
             }
         }
-        if (lista.isEmpty()) Text("Todavía no hay desparasitaciones registradas.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        lista.forEach { d ->
-            Card(onClick = { nav.navigate("deworming/form/$petId/${d.id}") }, modifier = Modifier.fillMaxWidth()) {
-                Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("${d.product} · ${d.kind}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text("Aplicada: ${Dates.format(d.appliedDay)}", style = MaterialTheme.typography.bodyMedium)
-                        d.nextDueDay?.let {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("Próxima: ${Dates.format(it)}", style = MaterialTheme.typography.bodyMedium)
-                                StatusChip(vaccineStatus(it, today, settings.warnDays))
+        if (lista.isEmpty()) VacioEnLinea("🪱", "Todavía no hay desparasitaciones registradas.")
+        lista.forEachIndexed { i, d ->
+            val status = vaccineStatus(d.nextDueDay, today, settings.warnDays)
+            Tarjeta(onClick = { nav.navigate("deworming/form/$petId/${d.id}") }, modifier = Modifier.fillMaxWidth().aparecer(i)) {
+                Row(Modifier.height(IntrinsicSize.Min)) {
+                    Box(Modifier.width(6.dp).fillMaxHeight().background(colorDeEstado(status)))
+                    Row(
+                        Modifier.weight(1f).padding(start = 14.dp, top = 12.dp, bottom = 12.dp, end = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        SpeciesBadge("🛡️", size = 44)
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text("${d.product} · ${d.kind}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text("Aplicada: ${Dates.format(d.appliedDay)}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            d.nextDueDay?.let {
+                                Text("Próxima: ${Dates.format(it)} · ${textoDias(it, today)}", style = MaterialTheme.typography.bodyMedium)
+                                StatusChip(status)
                             }
+                            if (d.notes.isNotBlank()) Text(d.notes, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        if (d.notes.isNotBlank()) Text(d.notes, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        IconButton(onClick = { aBorrar = d }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Borrar la desparasitación", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
-                    IconButton(onClick = { aBorrar = d }) { Icon(Icons.Filled.Delete, contentDescription = "Borrar la desparasitación") }
                 }
             }
         }

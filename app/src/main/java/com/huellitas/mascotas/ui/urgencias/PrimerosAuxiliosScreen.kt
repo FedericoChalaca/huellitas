@@ -1,21 +1,32 @@
 package com.huellitas.mascotas.ui.urgencias
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.huellitas.mascotas.ui.BackScaffold
+import com.huellitas.mascotas.ui.NotaDemo
+import com.huellitas.mascotas.ui.SpeciesBadge
+import com.huellitas.mascotas.ui.Tarjeta
+import com.huellitas.mascotas.ui.aparecer
 
 private data class Auxilio(val emoji: String, val titulo: String, val pasos: List<String>)
 
@@ -38,21 +49,34 @@ fun PrimerosAuxiliosScreen(nav: NavController) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(AUXILIOS, key = { it.titulo }) { a ->
-                Card(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("${a.emoji} ${a.titulo}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        a.pasos.forEachIndexed { i, paso -> Text("${i + 1}. $paso", style = MaterialTheme.typography.bodyMedium) }
+            item(key = "aviso") {
+                NotaDemo("Esta información es general y no reemplaza a un veterinario. Demostración académica.", Modifier.aparecer())
+            }
+            itemsIndexed(AUXILIOS, key = { _, a -> a.titulo }) { i, a ->
+                Tarjeta(Modifier.fillMaxWidth().aparecer(i + 1)) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            SpeciesBadge(a.emoji, size = 44)
+                            Text(a.titulo, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        }
+                        a.pasos.forEachIndexed { n, paso -> Paso(n + 1, paso) }
                     }
                 }
             }
-            item {
-                Text(
-                    "Esta información es general y no reemplaza a un veterinario. Demostración académica.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
+    }
+}
+
+/** Un paso numerado: el número en un circulito verde y el texto al lado. */
+@Composable
+private fun Paso(numero: Int, texto: String) {
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Box(
+            Modifier.size(24.dp).background(MaterialTheme.colorScheme.primary, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("$numero", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
+        }
+        Text(texto, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
     }
 }

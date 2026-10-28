@@ -2,6 +2,9 @@
 
 package com.huellitas.mascotas.ui.citas
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -19,6 +23,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,9 +56,14 @@ import com.huellitas.mascotas.data.motivoDeRuta
 import com.huellitas.mascotas.data.planPorId
 import com.huellitas.mascotas.data.speciesEmoji
 import com.huellitas.mascotas.ui.BackScaffold
+import com.huellitas.mascotas.ui.BotonPrincipal
 import com.huellitas.mascotas.ui.DateField
 import com.huellitas.mascotas.ui.EmptyState
+import com.huellitas.mascotas.ui.MensajeError
+import com.huellitas.mascotas.ui.NotaDemo
+import com.huellitas.mascotas.ui.Tarjeta
 import com.huellitas.mascotas.ui.activityViewModel
+import com.huellitas.mascotas.ui.tarjetaColores
 import kotlinx.coroutines.launch
 
 /**
@@ -127,10 +137,10 @@ fun PedirCitaScreen(
 
     BackScaffold("Pedir cita", onBack = { nav.popBackStack() }) { padding ->
         if (pets.isEmpty()) {
-            Column(Modifier.padding(padding)) {
-                EmptyState("🐾", "Primero agrega una mascota", "Las citas se piden para una mascota.", Modifier.weight(1f))
-                Button(onClick = { nav.navigate("pet/form/0") }, modifier = Modifier.fillMaxWidth().padding(16.dp)) { Text("Agregar mascota") }
-            }
+            EmptyState(
+                "🐾", "Primero agrega una mascota", "Las citas se piden para una mascota.", Modifier.padding(padding),
+                accion = { BotonPrincipal("Agregar mascota", onClick = { nav.navigate("pet/form/0") }) },
+            )
         } else Column(
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -145,13 +155,18 @@ fun PedirCitaScreen(
                     )
                 }
             }
-            if (mascota != null) {
-                Text(
-                    if (plan != null) "Su plan ${plan.nombre} cubre el ${plan.coberturaPct} % (demostración)."
-                    else "Esta mascota no tiene póliza: la cita sería particular.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            AnimatedVisibility(mascota != null) {
+                Surface(
+                    color = if (plan != null) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Text(
+                        if (plan != null) "🛡️ Su plan ${plan.nombre} cubre el ${plan.coberturaPct} % (demostración)."
+                        else "Esta mascota no tiene póliza: la cita sería particular.",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                }
             }
 
             Titulo("Motivo")
@@ -161,11 +176,13 @@ fun PedirCitaScreen(
                 }
             }
 
-            if (elMotivo == "Especialista") {
-                Titulo("Especialidad")
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ESPECIALIDADES.forEach { e ->
-                        FilterChip(selected = especialidadElegida == e, onClick = { especialidadElegida = e; error = null }, label = { Text(e) })
+            AnimatedVisibility(elMotivo == "Especialista") {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Titulo("Especialidad")
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ESPECIALIDADES.forEach { e ->
+                            FilterChip(selected = especialidadElegida == e, onClick = { especialidadElegida = e; error = null }, label = { Text(e) })
+                        }
                     }
                 }
             }
@@ -190,36 +207,52 @@ fun PedirCitaScreen(
                 }
             }
 
-            OutlinedTextField(notas, { notas = it }, label = { Text("Notas para la clínica (opcional)") }, minLines = 2, modifier = Modifier.fillMaxWidth())
-            error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-            Button(
+            OutlinedTextField(
+                notas, { notas = it },
+                label = { Text("Notas para la clínica (opcional)") },
+                minLines = 2,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            MensajeError(error)
+            BotonPrincipal(
+                "Pedir cita",
                 onClick = { pedir() },
                 enabled = !guardando && mascota != null && elMotivo != null && clinicaId != null && elDia != null && laHora != null,
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text("Pedir cita") }
-            Text(
-                "Demostración académica: no se le avisa a ninguna clínica real.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                cargando = guardando,
+                textoCargando = "Pidiendo…",
             )
+            NotaDemo("Demostración académica: no se le avisa a ninguna clínica real.")
         }
     }
 }
 
+/** Título de cada paso del formulario, con una huellita. */
 @Composable
 private fun Titulo(texto: String) {
-    Text(texto, style = MaterialTheme.typography.labelLarge)
+    Text(
+        "🐾 $texto",
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(top = 4.dp),
+    )
 }
 
 @Composable
 private fun ClinicaOpcion(clinica: Clinica, selected: Boolean, onClick: () -> Unit) {
-    val colors = if (selected) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else CardDefaults.cardColors()
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth(), colors = colors) {
+    // Al elegirla, la tarjeta se tiñe de verde con una transición suave.
+    val fondo by animateColorAsState(
+        if (selected) MaterialTheme.colorScheme.primaryContainer else tarjetaColores().containerColor,
+        tween(250),
+        label = "fondoClinica",
+    )
+    Tarjeta(onClick = onClick, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = fondo)) {
         Row(Modifier.padding(start = 4.dp, end = 16.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             // onClick = null: el toque lo maneja la tarjeta completa, no solo el circulito.
             RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(clinica.nombre, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text((if (clinica.abierta24h) "🚨 " else "🏥 ") + clinica.nombre, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(
                     "${clinica.ciudad} · ${clinica.distancia}" + if (clinica.abierta24h) " · 24 h" else "",
                     style = MaterialTheme.typography.bodySmall,

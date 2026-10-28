@@ -8,16 +8,24 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,10 +49,15 @@ import com.huellitas.mascotas.data.hora
 import com.huellitas.mascotas.data.horariosDisponibles
 import com.huellitas.mascotas.data.speciesEmoji
 import com.huellitas.mascotas.ui.BackScaffold
+import com.huellitas.mascotas.ui.BotonPrincipal
 import com.huellitas.mascotas.ui.ConfirmDialog
 import com.huellitas.mascotas.ui.DateField
+import com.huellitas.mascotas.ui.DatoConIcono
 import com.huellitas.mascotas.ui.EmptyState
+import com.huellitas.mascotas.ui.NotaDemo
 import com.huellitas.mascotas.ui.SpeciesBadge
+import com.huellitas.mascotas.ui.Tarjeta
+import com.huellitas.mascotas.ui.aparecer
 import java.time.LocalTime
 import kotlinx.coroutines.launch
 
@@ -69,41 +82,55 @@ fun CitaDetalleScreen(nav: NavController, citaId: Long, vm: CitasViewModel = vie
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Tarjeta(Modifier.fillMaxWidth().aparecer()) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         SpeciesBadge(speciesEmoji(cita.petSpecies), size = 56)
                         Column(Modifier.weight(1f)) {
                             Text("${a.reason} · ${cita.petName}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Text(a.specialty, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        EstadoCitaChip(a.status)
                     }
-                    if (a.urgent) Text("🚨 Atención de urgencia", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
-                    Text("${Dates.format(a.day)} · ${a.slot}", style = MaterialTheme.typography.titleMedium)
-                    if (a.notes.isNotBlank()) Text("Notas: ${a.notes}", style = MaterialTheme.typography.bodyMedium)
+                    EstadoCitaChip(a.status)
+                    if (a.urgent) {
+                        Surface(color = MaterialTheme.colorScheme.errorContainer, contentColor = MaterialTheme.colorScheme.onErrorContainer, shape = RoundedCornerShape(12.dp)) {
+                            Text("🚨 Atención de urgencia", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
+                        }
+                    }
+                    HorizontalDivider()
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                        HojaCalendario(a.day, urgente = a.urgent)
+                        Column {
+                            Text(Dates.format(a.day), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text("A las ${a.slot}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                    if (a.notes.isNotBlank()) DatoConIcono(Icons.Filled.Info, "Notas: ${a.notes}")
                 }
             }
-            Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(clinica?.nombre ?: "Clínica", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Tarjeta(Modifier.fillMaxWidth().aparecer(1)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        SpeciesBadge("🏥", size = 44)
+                        Text(clinica?.nombre ?: "Clínica", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    }
                     if (clinica != null) {
-                        Text("${clinica.direccion} · ${clinica.ciudad}", style = MaterialTheme.typography.bodyMedium)
-                        Text("Teléfono ${clinica.telefono}", style = MaterialTheme.typography.bodyMedium)
+                        DatoConIcono(Icons.Filled.Place, "${clinica.direccion} · ${clinica.ciudad}")
+                        DatoConIcono(Icons.Filled.Phone, "Teléfono ${clinica.telefono}")
                     }
                 }
             }
             if (vigente) {
-                Button(onClick = { reprogramando = true }, modifier = Modifier.fillMaxWidth()) { Text("Reprogramar") }
-                OutlinedButton(onClick = { confirmar = true }, modifier = Modifier.fillMaxWidth()) {
+                BotonPrincipal("Reprogramar", onClick = { reprogramando = true }, modifier = Modifier.aparecer(2))
+                OutlinedButton(
+                    onClick = { confirmar = true },
+                    modifier = Modifier.fillMaxWidth().height(50.dp).aparecer(3),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
                     Text("Cancelar cita", color = MaterialTheme.colorScheme.error)
                 }
             }
-            Text(
-                "Demostración académica: la clínica y la cita son de ejemplo.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            NotaDemo("Demostración académica: la clínica y la cita son de ejemplo.")
         }
 
         if (confirmar) {
